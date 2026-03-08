@@ -1,0 +1,8 @@
+services:
+  mail2csv:
+    build: .
+    env_file:
+      - .env
+    volumes:
+      - ./output:/output
+    container_name: mail2csv
