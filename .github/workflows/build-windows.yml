@@ -18,12 +18,9 @@ jobs:
         run: |
           pip install pyinstaller
           pyinstaller --onefile --name mail2csv mail2csv.py
-          dir dist /s
 
       - name: Create Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: dist/mail2csv.exe
           generate_release_notes: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
