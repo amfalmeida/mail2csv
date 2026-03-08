@@ -18,7 +18,8 @@ jobs:
         run: |
           pip install pyinstaller
           pyinstaller --onefile --name mail2csv mail2csv.py
-      
+          dir dist /s
+
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
