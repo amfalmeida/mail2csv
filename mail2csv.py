@@ -81,12 +81,37 @@ def get_attachments(msg):
     return "; ".join(names)
 
 
+def quote_mailbox(name):
+    """Properly quote mailbox name for IMAP protocol (RFC 3501)."""
+    # Escape backslashes and quotes, then wrap in quotes if needed
+    if any(c in name for c in ' \\"()[]{}%*'):
+        # Escape backslashes first, then quotes
+        escaped = name.replace('\\', '\\\\').replace('"', '\\"')
+        return f'"{escaped}"'
+    return name
+
+
+def list_mailboxes(imap):
+    """List all available mailboxes for debugging."""
+    try:
+        status, boxes = imap.list()
+        if status == 'OK':
+            print("\n📋 Available mailboxes on server:")
+            for box in boxes:
+                print(f"  {box}")
+            print()
+    except Exception as e:
+        print(f"Could not list mailboxes: {e}")
+
+
 # ── core export ──────────────────────────────────────────────────────────────
 
 def export_mailbox(imap, mailbox_name, writer, limit, since, seen_ids):
     """Fetch emails from a single mailbox and write rows to CSV."""
     try:
-        status, _ = imap.select(mailbox_name, readonly=True)
+        # Try using imap.select with proper quoting using imaplib's mechanism
+        # Construct the quoted mailbox name manually with literal syntax
+        status, _ = imap.select('"{}"'.format(mailbox_name.replace('\\', '\\\\').replace('"', '\\"')), readonly=True)
         if status != "OK":
             print(f"  ⚠  Could not open '{mailbox_name}', skipping.")
             return 0
@@ -136,7 +161,6 @@ def export_mailbox(imap, mailbox_name, writer, limit, since, seen_ids):
             "cc":          decode_str(msg.get("Cc", "")),
             "subject":     decode_str(msg.get("Subject", "")),
             "body":        get_body(msg),
-            "attachments": get_attachments(msg),
         })
         count += 1
 
@@ -190,7 +214,10 @@ def main():
 
     print("✅ Connected!\n")
 
-    fieldnames = ["mailbox", "message_id", "date", "from", "to", "cc", "subject", "body", "attachments"]
+    # Debug: List all available mailboxes
+    list_mailboxes(imap)
+
+    fieldnames = ["mailbox", "message_id", "date", "from", "to", "cc", "subject", "body"]
 
     with open(output, "w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=fieldnames)

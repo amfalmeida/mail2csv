@@ -1,0 +1,24 @@
+FROM ubuntu:22.04
+
+RUN apt-get update && apt-get install -y \
+    wine64 \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN wineboot --init || true
+
+WORKDIR /app
+
+COPY output/mail2csv.exe .
+
+ENV WINEDEBUG=-all
+ENV WINEPREFIX=/wine
+ENV IMAP_SERVER=
+ENV IMAP_PORT=993
+ENV EMAIL=
+ENV PASSWORD=
+ENV MAILBOX=
+ENV LIMIT=
+ENV SINCE=
+ENV OUTPUT=mail2csv.csv
+
+ENTRYPOINT ["wine", "mail2csv.exe"]

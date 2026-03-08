@@ -103,12 +103,69 @@ IMAP_SERVER=imap.gmail.com EMAIL=user@gmail.com PASSWORD=xxxx MAILBOX=INBOX LIMI
 
 ## 6 — Run directly with Python (no Docker)
 
+### macOS / Linux
 ```bash
 pip install -r requirements.txt
 export IMAP_SERVER=imap.gmail.com
 export EMAIL=you@gmail.com
 export PASSWORD=your_app_password
 python mail2csv.py
+```
+
+### Windows
+
+#### Step 1: Install Python
+1. Download Python from [python.org](https://www.python.org/downloads/)
+2. Run the installer
+3. **IMPORTANT**: Check the box "Add Python to PATH" during installation
+4. Click "Install Now"
+
+#### Step 2: Verify Python Installation
+Open Command Prompt (`cmd.exe`) and run:
+```cmd
+python --version
+```
+
+#### Step 3: Install Dependencies
+```cmd
+pip install -r requirements.txt
+```
+
+#### Step 4: Create .env File
+Create a `.env` file in the same folder as `mail2csv.py` with your credentials:
+```
+IMAP_SERVER=imap.gmail.com
+IMAP_PORT=993
+EMAIL=you@gmail.com
+PASSWORD=your_app_password
+MAILBOX=INBOX
+LIMIT=500
+SINCE=01-Jan-2026
+OUTPUT=mail2csv.csv
+```
+
+#### Step 5: Run the Script
+Open Command Prompt in the script folder and run:
+```cmd
+python mail2csv.py
+```
+
+The CSV will be created as `mail2csv.csv` (or the path specified in `OUTPUT`).
+
+#### Step 6 (Alternative): Set Environment Variables in Command Prompt
+If you prefer not to use `.env`, you can set environment variables directly:
+```cmd
+set IMAP_SERVER=imap.gmail.com
+set EMAIL=you@gmail.com
+set PASSWORD=your_app_password
+set MAILBOX=INBOX
+python mail2csv.py
+```
+
+#### Step 7 (Alternative): Run with Docker on Windows
+If you have Docker Desktop installed:
+```cmd
+docker-compose up --build
 ```
 
 ---

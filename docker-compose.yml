@@ -6,3 +6,13 @@ services:
     volumes:
       - ./output:/output
     container_name: mail2csv
+
+  mail2csv-exe:
+    build:
+      context: .
+      dockerfile: Dockerfile.exe
+    env_file:
+      - .env
+    volumes:
+      - ./output:/app/output
+    container_name: mail2csv-exe
